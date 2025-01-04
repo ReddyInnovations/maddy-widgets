@@ -1,0 +1,122 @@
+/* Main Footer Styles */
+.footer {
+  background-color: var(--bg-color, #2c2f33); /* Parent-level background */
+  color: var(--text-color, #ffffff); /* Parent-level text color */
+  padding: 40px 20px 15px 20px;
+  font-family: 'Arial', sans-serif;
+  text-align: center; /* Centers all content in the footer */
+}
+
+/* Footer Grid Layout */
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-items: center; /* Centers each footer section */
+}
+
+/* Footer Section */
+.footer-section {
+  text-align: center; /* Center content within each section */
+}
+
+.footer-section h4 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: var(--heading-color, #ffdd57); /* Parent-level heading color */
+}
+
+.footer-section p {
+  margin: 0 0 15px 0;
+  line-height: 1.5;
+  color: inherit;
+}
+
+.footer-link {
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 10px;
+  display: block;
+  color: inherit;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: var(--link-hover-color, #ffa726); /* Parent-level hover color */
+}
+
+/* Footer Address */
+.footer-address {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 15px;
+}
+
+.footer-address p {
+  margin: 5px 0;
+  text-align: center; /* Centers the address text */
+}
+
+/* Social Links */
+.footer-social {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+  justify-content: center; /* Centers social icons */
+}
+
+.footer-social a {
+  color: inherit;
+  font-size: 20px;
+  transition: color 0.3s ease;
+}
+
+.footer-social a:hover {
+  color: var(--social-hover-color, #ffdd57); /* Parent-level accent color */
+}
+
+/* Logo Styling */
+.footer-logo {
+  max-width: 150px;
+  margin-bottom: 15px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto; /* Centers the logo */
+}
+
+/* Footer Bottom */
+.footer-bottom {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 14px;
+  border-top: 1px solid #444;
+  color: var(--footer-bottom-color, #bbb);
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .footer-grid {
+    gap: 20px;
+  }
+
+  .footer-bottom {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-section h4 {
+    font-size: 16px;
+  }
+
+  .footer-link {
+    font-size: 12px;
+  }
+
+  .footer-address p {
+    font-size: 12px;
+  }
+}
