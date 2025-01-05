@@ -4,7 +4,8 @@ const deps = require('./package.json').dependencies;
 
 module.exports = {
     mfePlugin: new ModuleFederationPlugin({
-        name: 'maddy-widget',
+        name: 'maddy_widget',
+        library: { type: 'global', name: 'maddy_widget' },
         filename: 'remoteEntry.js',
         exposes: {
             './Header': './src/components/Header',
