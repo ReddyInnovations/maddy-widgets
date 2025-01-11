@@ -49,7 +49,7 @@ module.exports = {
     },
     target: 'web',
     output: {
-        filename: 'bundle.[fullhash].js',
+        filename: 'bundle.[contenthash].js',
         path: path.resolve(__dirname, 'dist'),
         clean: true,
     },
