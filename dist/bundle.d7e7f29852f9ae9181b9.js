@@ -1,6 +1,349 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./node_modules/@pmmmwh/react-refresh-webpack-plugin/lib/runtime/RefreshUtils.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@pmmmwh/react-refresh-webpack-plugin/lib/runtime/RefreshUtils.js ***!
+  \***************************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/* global __webpack_require__ */
+var Refresh = __webpack_require__(/*! react-refresh/runtime */ "./node_modules/react-refresh/runtime.js");
+
+/**
+ * Extracts exports from a webpack module object.
+ * @param {string} moduleId A Webpack module ID.
+ * @returns {*} An exports object from the module.
+ */
+function getModuleExports(moduleId) {
+  if (typeof moduleId === 'undefined') {
+    // `moduleId` is unavailable, which indicates that this module is not in the cache,
+    // which means we won't be able to capture any exports,
+    // and thus they cannot be refreshed safely.
+    // These are likely runtime or dynamically generated modules.
+    return {};
+  }
+
+  var maybeModule = __webpack_require__.c[moduleId];
+  if (typeof maybeModule === 'undefined') {
+    // `moduleId` is available but the module in cache is unavailable,
+    // which indicates the module is somehow corrupted (e.g. broken Webpacak `module` globals).
+    // We will warn the user (as this is likely a mistake) and assume they cannot be refreshed.
+    console.warn('[React Refresh] Failed to get exports for module: ' + moduleId + '.');
+    return {};
+  }
+
+  var exportsOrPromise = maybeModule.exports;
+  if (typeof Promise !== 'undefined' && exportsOrPromise instanceof Promise) {
+    return exportsOrPromise.then(function (exports) {
+      return exports;
+    });
+  }
+  return exportsOrPromise;
+}
+
+/**
+ * Calculates the signature of a React refresh boundary.
+ * If this signature changes, it's unsafe to accept the boundary.
+ *
+ * This implementation is based on the one in [Metro](https://github.com/facebook/metro/blob/907d6af22ac6ebe58572be418e9253a90665ecbd/packages/metro/src/lib/polyfills/require.js#L795-L816).
+ * @param {*} moduleExports A Webpack module exports object.
+ * @returns {string[]} A React refresh boundary signature array.
+ */
+function getReactRefreshBoundarySignature(moduleExports) {
+  var signature = [];
+  signature.push(Refresh.getFamilyByType(moduleExports));
+
+  if (moduleExports == null || typeof moduleExports !== 'object') {
+    // Exit if we can't iterate over exports.
+    return signature;
+  }
+
+  for (var key in moduleExports) {
+    if (key === '__esModule') {
+      continue;
+    }
+
+    signature.push(key);
+    signature.push(Refresh.getFamilyByType(moduleExports[key]));
+  }
+
+  return signature;
+}
+
+/**
+ * Creates a data object to be retained across refreshes.
+ * This object should not transtively reference previous exports,
+ * which can form infinite chain of objects across refreshes, which can pressure RAM.
+ *
+ * @param {*} moduleExports A Webpack module exports object.
+ * @returns {*} A React refresh boundary signature array.
+ */
+function getWebpackHotData(moduleExports) {
+  return {
+    signature: getReactRefreshBoundarySignature(moduleExports),
+    isReactRefreshBoundary: isReactRefreshBoundary(moduleExports),
+  };
+}
+
+/**
+ * Creates a helper that performs a delayed React refresh.
+ * @returns {function(function(): void): void} A debounced React refresh function.
+ */
+function createDebounceUpdate() {
+  /**
+   * A cached setTimeout handler.
+   * @type {number | undefined}
+   */
+  var refreshTimeout;
+
+  /**
+   * Performs react refresh on a delay and clears the error overlay.
+   * @param {function(): void} callback
+   * @returns {void}
+   */
+  function enqueueUpdate(callback) {
+    if (typeof refreshTimeout === 'undefined') {
+      refreshTimeout = setTimeout(function () {
+        refreshTimeout = undefined;
+        Refresh.performReactRefresh();
+        callback();
+      }, 30);
+    }
+  }
+
+  return enqueueUpdate;
+}
+
+/**
+ * Checks if all exports are likely a React component.
+ *
+ * This implementation is based on the one in [Metro](https://github.com/facebook/metro/blob/febdba2383113c88296c61e28e4ef6a7f4939fda/packages/metro/src/lib/polyfills/require.js#L748-L774).
+ * @param {*} moduleExports A Webpack module exports object.
+ * @returns {boolean} Whether the exports are React component like.
+ */
+function isReactRefreshBoundary(moduleExports) {
+  if (Refresh.isLikelyComponentType(moduleExports)) {
+    return true;
+  }
+  if (moduleExports === undefined || moduleExports === null || typeof moduleExports !== 'object') {
+    // Exit if we can't iterate over exports.
+    return false;
+  }
+
+  var hasExports = false;
+  var areAllExportsComponents = true;
+  for (var key in moduleExports) {
+    hasExports = true;
+
+    // This is the ES Module indicator flag
+    if (key === '__esModule') {
+      continue;
+    }
+
+    // We can (and have to) safely execute getters here,
+    // as Webpack manually assigns harmony exports to getters,
+    // without any side-effects attached.
+    // Ref: https://github.com/webpack/webpack/blob/b93048643fe74de2a6931755911da1212df55897/lib/MainTemplate.js#L281
+    var exportValue = moduleExports[key];
+    if (!Refresh.isLikelyComponentType(exportValue)) {
+      areAllExportsComponents = false;
+    }
+  }
+
+  return hasExports && areAllExportsComponents;
+}
+
+/**
+ * Checks if exports are likely a React component and registers them.
+ *
+ * This implementation is based on the one in [Metro](https://github.com/facebook/metro/blob/febdba2383113c88296c61e28e4ef6a7f4939fda/packages/metro/src/lib/polyfills/require.js#L818-L835).
+ * @param {*} moduleExports A Webpack module exports object.
+ * @param {string} moduleId A Webpack module ID.
+ * @returns {void}
+ */
+function registerExportsForReactRefresh(moduleExports, moduleId) {
+  if (Refresh.isLikelyComponentType(moduleExports)) {
+    // Register module.exports if it is likely a component
+    Refresh.register(moduleExports, moduleId + ' %exports%');
+  }
+
+  if (moduleExports === undefined || moduleExports === null || typeof moduleExports !== 'object') {
+    // Exit if we can't iterate over the exports.
+    return;
+  }
+
+  for (var key in moduleExports) {
+    // Skip registering the ES Module indicator
+    if (key === '__esModule') {
+      continue;
+    }
+
+    var exportValue = moduleExports[key];
+    if (Refresh.isLikelyComponentType(exportValue)) {
+      var typeID = moduleId + ' %exports% ' + key;
+      Refresh.register(exportValue, typeID);
+    }
+  }
+}
+
+/**
+ * Compares previous and next module objects to check for mutated boundaries.
+ *
+ * This implementation is based on the one in [Metro](https://github.com/facebook/metro/blob/907d6af22ac6ebe58572be418e9253a90665ecbd/packages/metro/src/lib/polyfills/require.js#L776-L792).
+ * @param {*} prevSignature The signature of the current Webpack module exports object.
+ * @param {*} nextSignature The signature of the next Webpack module exports object.
+ * @returns {boolean} Whether the React refresh boundary should be invalidated.
+ */
+function shouldInvalidateReactRefreshBoundary(prevSignature, nextSignature) {
+  if (prevSignature.length !== nextSignature.length) {
+    return true;
+  }
+
+  for (var i = 0; i < nextSignature.length; i += 1) {
+    if (prevSignature[i] !== nextSignature[i]) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+var enqueueUpdate = createDebounceUpdate();
+function executeRuntime(moduleExports, moduleId, webpackHot, refreshOverlay, isTest) {
+  registerExportsForReactRefresh(moduleExports, moduleId);
+
+  if (webpackHot) {
+    var isHotUpdate = !!webpackHot.data;
+    var prevData;
+    if (isHotUpdate) {
+      prevData = webpackHot.data.prevData;
+    }
+
+    if (isReactRefreshBoundary(moduleExports)) {
+      webpackHot.dispose(
+        /**
+         * A callback to performs a full refresh if React has unrecoverable errors,
+         * and also caches the to-be-disposed module.
+         * @param {*} data A hot module data object from Webpack HMR.
+         * @returns {void}
+         */
+        function hotDisposeCallback(data) {
+          // We have to mutate the data object to get data registered and cached
+          data.prevData = getWebpackHotData(moduleExports);
+        }
+      );
+      webpackHot.accept(
+        /**
+         * An error handler to allow self-recovering behaviours.
+         * @param {Error} error An error occurred during evaluation of a module.
+         * @returns {void}
+         */
+        function hotErrorHandler(error) {
+          if (typeof refreshOverlay !== 'undefined' && refreshOverlay) {
+            refreshOverlay.handleRuntimeError(error);
+          }
+
+          if (typeof isTest !== 'undefined' && isTest) {
+            if (window.onHotAcceptError) {
+              window.onHotAcceptError(error.message);
+            }
+          }
+
+          __webpack_require__.c[moduleId].hot.accept(hotErrorHandler);
+        }
+      );
+
+      if (isHotUpdate) {
+        if (
+          prevData &&
+          prevData.isReactRefreshBoundary &&
+          shouldInvalidateReactRefreshBoundary(
+            prevData.signature,
+            getReactRefreshBoundarySignature(moduleExports)
+          )
+        ) {
+          webpackHot.invalidate();
+        } else {
+          enqueueUpdate(
+            /**
+             * A function to dismiss the error overlay after performing React refresh.
+             * @returns {void}
+             */
+            function updateCallback() {
+              if (typeof refreshOverlay !== 'undefined' && refreshOverlay) {
+                refreshOverlay.clearRuntimeErrors();
+              }
+            }
+          );
+        }
+      }
+    } else {
+      if (isHotUpdate && typeof prevData !== 'undefined') {
+        webpackHot.invalidate();
+      }
+    }
+  }
+}
+
+module.exports = Object.freeze({
+  enqueueUpdate: enqueueUpdate,
+  executeRuntime: executeRuntime,
+  getModuleExports: getModuleExports,
+  isReactRefreshBoundary: isReactRefreshBoundary,
+  registerExportsForReactRefresh: registerExportsForReactRefresh,
+});
+
+
+/***/ }),
+
+/***/ "./src/index.tsx":
+/*!***********************!*\
+  !*** ./src/index.tsx ***!
+  \***********************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* provided dependency */ var __react_refresh_utils__ = __webpack_require__(/*! ./node_modules/@pmmmwh/react-refresh-webpack-plugin/lib/runtime/RefreshUtils.js */ "./node_modules/@pmmmwh/react-refresh-webpack-plugin/lib/runtime/RefreshUtils.js");
+__webpack_require__.$Refresh$.runtime = __webpack_require__(/*! ./node_modules/react-refresh/runtime.js */ "./node_modules/react-refresh/runtime.js");
+
+Promise.all(/*! import() */[__webpack_require__.e("vendors-node_modules_react_jsx-runtime_js"), __webpack_require__.e("vendors-node_modules_react-icons_fa_index_mjs"), __webpack_require__.e("webpack_sharing_consume_default_react_react"), __webpack_require__.e("webpack_sharing_consume_default_react-dom_react-dom"), __webpack_require__.e("webpack_sharing_consume_default_react-router-dom_react-router-dom-webpack_sharing_consume_def-746943"), __webpack_require__.e("src_components_Footer_tsx"), __webpack_require__.e("src_components_Card_MaddyCardSection_tsx"), __webpack_require__.e("webpack_sharing_consume_default_mui_material_mui_material-webpack_sharing_consume_default_rea-ff8528"), __webpack_require__.e("src_bootstrap_tsx")]).then(__webpack_require__.bind(__webpack_require__, /*! @src/bootstrap */ "./src/bootstrap.tsx"));
+
+
+const $ReactRefreshModuleId$ = __webpack_require__.$Refresh$.moduleId;
+const $ReactRefreshCurrentExports$ = __react_refresh_utils__.getModuleExports(
+	$ReactRefreshModuleId$
+);
+
+function $ReactRefreshModuleRuntime$(exports) {
+	if (true) {
+		let errorOverlay;
+		if (true) {
+			errorOverlay = false;
+		}
+		let testMode;
+		if (typeof __react_refresh_test__ !== 'undefined') {
+			testMode = __react_refresh_test__;
+		}
+		return __react_refresh_utils__.executeRuntime(
+			exports,
+			$ReactRefreshModuleId$,
+			module.hot,
+			errorOverlay,
+			testMode
+		);
+	}
+}
+
+if (typeof Promise !== 'undefined' && $ReactRefreshCurrentExports$ instanceof Promise) {
+	$ReactRefreshCurrentExports$.then($ReactRefreshModuleRuntime$);
+} else {
+	$ReactRefreshModuleRuntime$($ReactRefreshCurrentExports$);
+}
+
+/***/ }),
+
 /***/ "./node_modules/react-refresh/cjs/react-refresh-runtime.development.js":
 /*!*****************************************************************************!*\
   !*** ./node_modules/react-refresh/cjs/react-refresh-runtime.development.js ***!
@@ -683,62 +1026,6 @@ if (false) {} else {
   module.exports = __webpack_require__(/*! ./cjs/react-refresh-runtime.development.js */ "./node_modules/react-refresh/cjs/react-refresh-runtime.development.js");
 }
 
-
-/***/ }),
-
-/***/ "webpack/container/entry/maddy_widget":
-/*!***********************!*\
-  !*** container entry ***!
-  \***********************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-var moduleMap = {
-	"./Header": () => {
-		return Promise.all([__webpack_require__.e("vendors-node_modules_react_jsx-runtime_js"), __webpack_require__.e("vendors-node_modules_react-icons_fa_index_mjs"), __webpack_require__.e("webpack_sharing_consume_default_react_react"), __webpack_require__.e("webpack_sharing_consume_default_react-router-dom_react-router-dom-webpack_sharing_consume_def-746943"), __webpack_require__.e("src_components_Header_tsx")]).then(() => (() => ((__webpack_require__(/*! ./src/components/Header */ "./src/components/Header.tsx")))));
-	},
-	"./Footer": () => {
-		return Promise.all([__webpack_require__.e("vendors-node_modules_react_jsx-runtime_js"), __webpack_require__.e("webpack_sharing_consume_default_react_react"), __webpack_require__.e("src_components_Footer_tsx"), __webpack_require__.e("node_modules_pmmmwh_react-refresh-webpack-plugin_lib_runtime_RefreshUtils_js")]).then(() => (() => ((__webpack_require__(/*! ./src/components/Footer */ "./src/components/Footer.tsx")))));
-	},
-	"./WhatsAppWidget": () => {
-		return Promise.all([__webpack_require__.e("vendors-node_modules_react_jsx-runtime_js"), __webpack_require__.e("vendors-node_modules_react-icons_fa_index_mjs"), __webpack_require__.e("webpack_sharing_consume_default_react_react"), __webpack_require__.e("webpack_sharing_consume_default_mui_material_mui_material-webpack_sharing_consume_default_rea-ff8528"), __webpack_require__.e("src_components_WhatsAppWidget_tsx")]).then(() => (() => ((__webpack_require__(/*! ./src/components/WhatsAppWidget */ "./src/components/WhatsAppWidget.tsx")))));
-	},
-	"./Profile": () => {
-		return Promise.all([__webpack_require__.e("vendors-node_modules_react_jsx-runtime_js"), __webpack_require__.e("vendors-node_modules_react-icons_fa_index_mjs"), __webpack_require__.e("webpack_sharing_consume_default_react_react"), __webpack_require__.e("webpack_sharing_consume_default_react-router-dom_react-router-dom-webpack_sharing_consume_def-746943"), __webpack_require__.e("src_components_Profile_tsx")]).then(() => (() => ((__webpack_require__(/*! ./src/components/Profile */ "./src/components/Profile.tsx")))));
-	},
-	"./MaddyCardSection": () => {
-		return Promise.all([__webpack_require__.e("vendors-node_modules_react_jsx-runtime_js"), __webpack_require__.e("webpack_sharing_consume_default_react_react"), __webpack_require__.e("src_components_Card_MaddyCardSection_tsx"), __webpack_require__.e("node_modules_pmmmwh_react-refresh-webpack-plugin_lib_runtime_RefreshUtils_js-node_modules_css-5b79c2")]).then(() => (() => ((__webpack_require__(/*! ./src/components/Card/MaddyCardSection */ "./src/components/Card/MaddyCardSection.tsx")))));
-	},
-	"./MaddyCard": () => {
-		return Promise.all([__webpack_require__.e("vendors-node_modules_react_jsx-runtime_js"), __webpack_require__.e("webpack_sharing_consume_default_react_react"), __webpack_require__.e("src_components_Card_MaddyCard_tsx")]).then(() => (() => ((__webpack_require__(/*! ./src/components/Card/MaddyCard */ "./src/components/Card/MaddyCard.tsx")))));
-	}
-};
-var get = (module, getScope) => {
-	__webpack_require__.R = getScope;
-	getScope = (
-		__webpack_require__.o(moduleMap, module)
-			? moduleMap[module]()
-			: Promise.resolve().then(() => {
-				throw new Error('Module "' + module + '" does not exist in container.');
-			})
-	);
-	__webpack_require__.R = undefined;
-	return getScope;
-};
-var init = (shareScope, initScope) => {
-	if (!__webpack_require__.S) return;
-	var name = "default"
-	var oldScope = __webpack_require__.S[name];
-	if(oldScope && oldScope !== shareScope) throw new Error("Container initialization failed as it has already been initialized with a different share scope");
-	__webpack_require__.S[name] = shareScope;
-	return __webpack_require__.I(name, initScope);
-};
-
-// This exports getters to disallow modifications
-__webpack_require__.d(exports, {
-	get: () => (get),
-	init: () => (init)
-});
 
 /***/ }),
 
@@ -2230,7 +2517,7 @@ module.exports = parent;
 /******/ 	
 /******/ 	/* webpack/runtime/get update manifest filename */
 /******/ 	(() => {
-/******/ 		__webpack_require__.hmrF = () => ("maddy_widget." + __webpack_require__.h() + ".hot-update.json");
+/******/ 		__webpack_require__.hmrF = () => ("main." + __webpack_require__.h() + ".hot-update.json");
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
@@ -2983,34 +3270,25 @@ module.exports = parent;
 /******/ 		var installedModules = {};
 /******/ 		var moduleToHandlerMapping = {
 /******/ 			"webpack/sharing/consume/default/react/react": () => (loadSingletonVersion("default", "react", false, [1,18,3,1], () => (__webpack_require__.e("vendors-node_modules_react_index_js").then(() => (() => (__webpack_require__(/*! react */ "./node_modules/react/index.js"))))))),
-/******/ 			"webpack/sharing/consume/default/@emotion/react/@emotion/react": () => (loadStrictVersion("default", "@emotion/react", false, [1,11,14,0], () => (Promise.all([__webpack_require__.e("vendors-node_modules_emotion_cache_dist_emotion-cache_browser_development_esm_js"), __webpack_require__.e("vendors-node_modules_emotion_react_dist_emotion-react_browser_development_esm_js")]).then(() => (() => (__webpack_require__(/*! @emotion/react */ "./node_modules/@emotion/react/dist/emotion-react.browser.development.esm.js"))))))),
-/******/ 			"webpack/sharing/consume/default/@fortawesome/fontawesome-svg-core/@fortawesome/fontawesome-svg-core": () => (loadStrictVersion("default", "@fortawesome/fontawesome-svg-core", false, [1,6,7,1], () => (__webpack_require__.e("vendors-node_modules_fortawesome_fontawesome-svg-core_index_mjs").then(() => (() => (__webpack_require__(/*! @fortawesome/fontawesome-svg-core */ "./node_modules/@fortawesome/fontawesome-svg-core/index.mjs"))))))),
 /******/ 			"webpack/sharing/consume/default/react-dom/react-dom": () => (loadSingletonVersion("default", "react-dom", false, [1,18,3,1], () => (__webpack_require__.e("vendors-node_modules_react-dom_index_js").then(() => (() => (__webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js"))))))),
-/******/ 			"webpack/sharing/consume/default/@emotion/styled/@emotion/styled": () => (loadStrictVersion("default", "@emotion/styled", false, [1,11,14,0], () => (__webpack_require__.e("vendors-node_modules_emotion_styled_dist_emotion-styled_browser_development_esm_js").then(() => (() => (__webpack_require__(/*! @emotion/styled */ "./node_modules/@emotion/styled/dist/emotion-styled.browser.development.esm.js"))))))),
 /******/ 			"webpack/sharing/consume/default/react-router-dom/react-router-dom": () => (loadStrictVersion("default", "react-router-dom", false, [1,7,0,2], () => (Promise.all([__webpack_require__.e("vendors-node_modules_react-router-dom_dist_index_mjs"), __webpack_require__.e("webpack_sharing_consume_default_react-dom_react-dom")]).then(() => (() => (__webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/dist/index.mjs"))))))),
 /******/ 			"webpack/sharing/consume/default/styled-components/styled-components": () => (loadSingletonVersion("default", "styled-components", false, [1,5,3,11], () => (__webpack_require__.e("vendors-node_modules_styled-components_dist_styled-components_browser_esm_js").then(() => (() => (__webpack_require__(/*! styled-components */ "./node_modules/styled-components/dist/styled-components.browser.esm.js"))))))),
 /******/ 			"webpack/sharing/consume/default/@fortawesome/free-brands-svg-icons/@fortawesome/free-brands-svg-icons": () => (loadStrictVersion("default", "@fortawesome/free-brands-svg-icons", false, [1,6,7,1], () => (__webpack_require__.e("vendors-node_modules_fortawesome_free-brands-svg-icons_index_mjs").then(() => (() => (__webpack_require__(/*! @fortawesome/free-brands-svg-icons */ "./node_modules/@fortawesome/free-brands-svg-icons/index.mjs"))))))),
 /******/ 			"webpack/sharing/consume/default/@fortawesome/react-fontawesome/@fortawesome/react-fontawesome": () => (loadStrictVersion("default", "@fortawesome/react-fontawesome", false, [2,0,2,2], () => (Promise.all([__webpack_require__.e("vendors-node_modules_prop-types_index_js"), __webpack_require__.e("vendors-node_modules_fortawesome_react-fontawesome_index_es_js"), __webpack_require__.e("webpack_sharing_consume_default_fortawesome_fontawesome-svg-core_fortawesome_fontawesome-svg-core")]).then(() => (() => (__webpack_require__(/*! @fortawesome/react-fontawesome */ "./node_modules/@fortawesome/react-fontawesome/index.es.js"))))))),
 /******/ 			"webpack/sharing/consume/default/@fortawesome/free-solid-svg-icons/@fortawesome/free-solid-svg-icons": () => (loadStrictVersion("default", "@fortawesome/free-solid-svg-icons", false, [1,6,7,1], () => (__webpack_require__.e("vendors-node_modules_fortawesome_free-solid-svg-icons_index_mjs").then(() => (() => (__webpack_require__(/*! @fortawesome/free-solid-svg-icons */ "./node_modules/@fortawesome/free-solid-svg-icons/index.mjs"))))))),
 /******/ 			"webpack/sharing/consume/default/@mui/material/@mui/material": () => (loadStrictVersion("default", "@mui/material", false, [1,6,3,1], () => (Promise.all([__webpack_require__.e("vendors-node_modules_prop-types_index_js"), __webpack_require__.e("vendors-node_modules_emotion_cache_dist_emotion-cache_browser_development_esm_js"), __webpack_require__.e("vendors-node_modules_emotion_serialize_dist_emotion-serialize_development_esm_js-node_modules-5f4c2e"), __webpack_require__.e("vendors-node_modules_mui_material_index_js"), __webpack_require__.e("webpack_sharing_consume_default_react-dom_react-dom"), __webpack_require__.e("webpack_sharing_consume_default_emotion_react_emotion_react"), __webpack_require__.e("webpack_sharing_consume_default_emotion_styled_emotion_styled")]).then(() => (() => (__webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/index.js"))))))),
-/******/ 			"webpack/sharing/consume/default/react-draggable/react-draggable": () => (loadStrictVersion("default", "react-draggable", false, [1,4,4,6], () => (Promise.all([__webpack_require__.e("vendors-node_modules_prop-types_index_js"), __webpack_require__.e("vendors-node_modules_react-draggable_build_cjs_cjs_js"), __webpack_require__.e("webpack_sharing_consume_default_react-dom_react-dom")]).then(() => (() => (__webpack_require__(/*! react-draggable */ "./node_modules/react-draggable/build/cjs/cjs.js")))))))
+/******/ 			"webpack/sharing/consume/default/react-draggable/react-draggable": () => (loadStrictVersion("default", "react-draggable", false, [1,4,4,6], () => (Promise.all([__webpack_require__.e("vendors-node_modules_prop-types_index_js"), __webpack_require__.e("vendors-node_modules_react-draggable_build_cjs_cjs_js"), __webpack_require__.e("webpack_sharing_consume_default_react-dom_react-dom")]).then(() => (() => (__webpack_require__(/*! react-draggable */ "./node_modules/react-draggable/build/cjs/cjs.js"))))))),
+/******/ 			"webpack/sharing/consume/default/@emotion/react/@emotion/react": () => (loadStrictVersion("default", "@emotion/react", false, [1,11,14,0], () => (Promise.all([__webpack_require__.e("vendors-node_modules_emotion_cache_dist_emotion-cache_browser_development_esm_js"), __webpack_require__.e("vendors-node_modules_emotion_react_dist_emotion-react_browser_development_esm_js")]).then(() => (() => (__webpack_require__(/*! @emotion/react */ "./node_modules/@emotion/react/dist/emotion-react.browser.development.esm.js"))))))),
+/******/ 			"webpack/sharing/consume/default/@fortawesome/fontawesome-svg-core/@fortawesome/fontawesome-svg-core": () => (loadStrictVersion("default", "@fortawesome/fontawesome-svg-core", false, [1,6,7,1], () => (__webpack_require__.e("vendors-node_modules_fortawesome_fontawesome-svg-core_index_mjs").then(() => (() => (__webpack_require__(/*! @fortawesome/fontawesome-svg-core */ "./node_modules/@fortawesome/fontawesome-svg-core/index.mjs"))))))),
+/******/ 			"webpack/sharing/consume/default/@emotion/styled/@emotion/styled": () => (loadStrictVersion("default", "@emotion/styled", false, [1,11,14,0], () => (__webpack_require__.e("vendors-node_modules_emotion_styled_dist_emotion-styled_browser_development_esm_js").then(() => (() => (__webpack_require__(/*! @emotion/styled */ "./node_modules/@emotion/styled/dist/emotion-styled.browser.development.esm.js")))))))
 /******/ 		};
 /******/ 		// no consumes in initial chunks
 /******/ 		var chunkMapping = {
 /******/ 			"webpack_sharing_consume_default_react_react": [
 /******/ 				"webpack/sharing/consume/default/react/react"
 /******/ 			],
-/******/ 			"webpack_sharing_consume_default_emotion_react_emotion_react": [
-/******/ 				"webpack/sharing/consume/default/@emotion/react/@emotion/react"
-/******/ 			],
-/******/ 			"webpack_sharing_consume_default_fortawesome_fontawesome-svg-core_fortawesome_fontawesome-svg-core": [
-/******/ 				"webpack/sharing/consume/default/@fortawesome/fontawesome-svg-core/@fortawesome/fontawesome-svg-core"
-/******/ 			],
 /******/ 			"webpack_sharing_consume_default_react-dom_react-dom": [
 /******/ 				"webpack/sharing/consume/default/react-dom/react-dom"
-/******/ 			],
-/******/ 			"webpack_sharing_consume_default_emotion_styled_emotion_styled": [
-/******/ 				"webpack/sharing/consume/default/@emotion/styled/@emotion/styled"
 /******/ 			],
 /******/ 			"webpack_sharing_consume_default_react-router-dom_react-router-dom-webpack_sharing_consume_def-746943": [
 /******/ 				"webpack/sharing/consume/default/react-router-dom/react-router-dom",
@@ -3024,6 +3302,15 @@ module.exports = parent;
 /******/ 			"webpack_sharing_consume_default_mui_material_mui_material-webpack_sharing_consume_default_rea-ff8528": [
 /******/ 				"webpack/sharing/consume/default/@mui/material/@mui/material",
 /******/ 				"webpack/sharing/consume/default/react-draggable/react-draggable"
+/******/ 			],
+/******/ 			"webpack_sharing_consume_default_emotion_react_emotion_react": [
+/******/ 				"webpack/sharing/consume/default/@emotion/react/@emotion/react"
+/******/ 			],
+/******/ 			"webpack_sharing_consume_default_fortawesome_fontawesome-svg-core_fortawesome_fontawesome-svg-core": [
+/******/ 				"webpack/sharing/consume/default/@fortawesome/fontawesome-svg-core/@fortawesome/fontawesome-svg-core"
+/******/ 			],
+/******/ 			"webpack_sharing_consume_default_emotion_styled_emotion_styled": [
+/******/ 				"webpack/sharing/consume/default/@emotion/styled/@emotion/styled"
 /******/ 			]
 /******/ 		};
 /******/ 		var startedInstallModules = {};
@@ -3067,7 +3354,7 @@ module.exports = parent;
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = __webpack_require__.hmrS_jsonp = __webpack_require__.hmrS_jsonp || {
-/******/ 			"maddy_widget": 0
+/******/ 			"main": 0
 /******/ 		};
 /******/ 		
 /******/ 		__webpack_require__.f.j = (chunkId, promises) => {
@@ -3646,9 +3933,8 @@ module.exports = parent;
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	__webpack_require__("./node_modules/@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry.js");
-/******/ 	var __webpack_exports__ = __webpack_require__("webpack/container/entry/maddy_widget");
-/******/ 	self.maddy_widget = __webpack_exports__;
+/******/ 	var __webpack_exports__ = __webpack_require__("./src/index.tsx");
 /******/ 	
 /******/ })()
 ;
-//# sourceMappingURL=remoteEntry.js.map
+//# sourceMappingURL=bundle.d7e7f29852f9ae9181b9.js.map
