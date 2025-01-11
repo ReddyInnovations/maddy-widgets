@@ -10,7 +10,7 @@ import {
   SidebarContent,
   SidebarNavList,
 } from '@src/styles/Header.styles';
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
@@ -25,18 +25,21 @@ const Header: React.FC<HeaderProps> = ({
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 768) {
-        setMenuOpen(false);
-      }
-    };
+  // useCallback to prevent unnecessary re-creations of the handler
+  const handleResize = useCallback(() => {
+    if (window.innerWidth > 768) {
+      setMenuOpen(false);
+    }
+  }, [setMenuOpen]);
 
+  useEffect(() => {
     window.addEventListener('resize', handleResize);
+    
+    // Cleanup the event listener
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [handleResize]);
 
   return (
     <>
