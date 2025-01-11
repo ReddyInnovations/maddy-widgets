@@ -1,5 +1,5 @@
 export const profileData = {
-  profileImage: '/path/to/image.jpg', // Add the correct path to your profile image
+  profileImage: '/path/to/image.jpg',
   siteTitle: 'My Website',
   socialLinks: {
     whatsapp: 'https://wa.me/1234567890',
@@ -49,13 +49,11 @@ export const headerData = {
     { url: '/products', label: 'Products' },
     { url: '/contact', label: 'Contact' },
   ],
-  logoSrc: '', // Add your logo URL here
-  menuOpen: false, // Controlled state for menu open/close
-  setMenuOpen: (value: boolean) => {
-    /* Placeholder for state setter function */
-  },
+  logoSrc: '',
+  menuOpen: false,
+  setMenuOpen: (value: boolean) => {},
   onLoginClick: () => console.log('Login Clicked'),
-  theme: modernDarkTheme, // Directly using the theme object
+  theme: modernDarkTheme,
 };
 
 export const footerData = {
@@ -87,7 +85,15 @@ export const footerData = {
       ],
     },
   ],
-  logoSrc: '', // Add your footer logo URL here
+  logoSrc: '',
   companyName: 'Irasah Innovations',
   showFooterBottom: true,
 };
+
+
+export const cardData = {
+  title: "Educational Background",
+  subtitle: "Highlights of Academic Achievements",
+  cardInfoList: [],
+  borderColor: "#ff9800"
+}

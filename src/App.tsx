@@ -6,7 +6,8 @@ import Footer from './components/Footer';
 
 import WhatsAppWidget from './components/WhatsAppWidget';
 import Profile from './components/Profile';
-import { footerData, headerData, profileData, whatsappData } from './mock/mock';
+import { cardData, footerData, headerData, profileData, whatsappData } from './mock/mock';
+import MaddyCardSection from './components/Card/MaddyCardSection';
 
 const App: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(headerData.menuOpen);
@@ -21,6 +22,7 @@ const App: React.FC = () => {
         theme={headerData.theme}
       />
       <Profile {...profileData} />
+      <MaddyCardSection {...cardData} />
       <Footer {...footerData} />
       <WhatsAppWidget {...whatsappData} />
     </Router>
