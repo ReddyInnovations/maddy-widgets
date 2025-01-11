@@ -11,6 +11,9 @@ module.exports = {
             './Header': './src/components/Header',
             './Footer': './src/components/Footer',
             './WhatsAppWidget': './src/components/WhatsAppWidget',
+            './Profile': './src/components/Profile',
+            './CardSection': './src/components/Card/CardSection',
+            './Card': './src/components/Card/Card',
         },
         remotes: {},
         shared: {
