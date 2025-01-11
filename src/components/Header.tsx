@@ -1,6 +1,4 @@
-import React from 'react';
-import { FaBars, FaTimes } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { HeaderProps } from '@src/interfaces/Header';
 import {
   HeaderContainer,
   Logo,
@@ -8,60 +6,83 @@ import {
   NavList,
   LoginLink,
   MenuToggle,
+  Sidebar,
+  SidebarContent,
+  SidebarNavList,
 } from '@src/styles/Header.styles';
-
-interface HeaderProps {
-  menuLinks: { url: string; label: string }[]; // Menu links are required
-  onLoginClick?: () => void; // Login click handler is optional
-  logoSrc: string; // Logo source is required
-  menuOpen: boolean; // Menu state is required
-  setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>; // Set menu state is required
-  theme?: {
-    primaryColor?: string;
-    secondaryColor?: string;
-    backgroundColor?: string;
-    hoverColor?: string;
-  }; // Theme customization
-}
+import React, { useEffect } from 'react';
+import { FaBars, FaTimes } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const Header: React.FC<HeaderProps> = ({
   menuLinks,
-  onLoginClick,
   logoSrc,
   menuOpen,
   setMenuOpen,
+  onLoginClick,
   theme,
 }) => {
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
-    <HeaderContainer theme={theme}>
-      <Logo>
-        <img src={logoSrc} alt="Logo" />
-      </Logo>
-      <Nav menuOpen={menuOpen} theme={theme}>
-        <NavList>
-          {menuLinks.map((link) => (
-            <li key={link.url}>
-              <Link to={link.url} onClick={closeMenu}>
-                {link.label}
-              </Link>
-            </li>
-          ))}
-        </NavList>
-      </Nav>
-      {onLoginClick && (
-        <LoginLink onClick={onLoginClick} theme={theme}>
-          Login
-        </LoginLink>
-      )}
-      {menuLinks.length > 0 && (
+    <>
+      <HeaderContainer theme={theme}>
+        {/* Logo */}
+        <Logo>{logoSrc && <img src={logoSrc} alt="Main Logo" />}</Logo>
+
+        {/* Desktop Navigation */}
+        <Nav theme={theme}>
+          <NavList theme={theme}>
+            {menuLinks.map((link) => (
+              <li key={link.url}>
+                <Link to={link.url}>{link.label}</Link>
+              </li>
+            ))}
+          </NavList>
+        </Nav>
+
+        {/* Login Button (Desktop) */}
+        {onLoginClick && (
+          <LoginLink onClick={onLoginClick} theme={theme}>
+            Login
+          </LoginLink>
+        )}
+
+        {/* Menu Toggle (Mobile) */}
         <MenuToggle onClick={toggleMenu} theme={theme}>
           {menuOpen ? <FaTimes /> : <FaBars />}
         </MenuToggle>
-      )}
-    </HeaderContainer>
+      </HeaderContainer>
+
+      {/* Sidebar for Mobile */}
+      <Sidebar menuOpen={menuOpen} theme={theme}>
+        <SidebarContent>
+          <SidebarNavList theme={theme}>
+            {menuLinks.map((link) => (
+              <li key={link.url}>
+                <Link to={link.url} onClick={closeMenu}>
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </SidebarNavList>
+        </SidebarContent>
+      </Sidebar>
+    </>
   );
 };
 

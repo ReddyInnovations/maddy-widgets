@@ -4,68 +4,56 @@ export const HeaderContainer = styled.header<{ theme?: any }>`
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: ${({ theme }) => theme?.backgroundColor || '#fff'};
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  position: fixed;
+  background-color: ${({ theme }) => theme?.headerBackgroundColor || '#2c2c2c'};
+  color: ${({ theme }) => theme?.textColor || 'lightblue'};
+  position: sticky;
   top: 0;
-  left: 0;
-  width: 100%;
   z-index: 1000;
-  box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 export const Logo = styled.div`
   img {
-    height: 50px;
-    width: auto;
+    max-height: 50px;
   }
 `;
 
-export const Nav = styled.nav<{ menuOpen: boolean; theme?: any }>`
+export const Nav = styled.nav<{ theme?: any }>`
   display: flex;
-  justify-content: center; /* Ensures links are centered */
   align-items: center;
-  flex: 1; /* Takes up available space for proper centering */
-  gap: 20px;
+  transition: left 0.3s ease-in-out;
 
   @media (max-width: 768px) {
-    display: ${({ menuOpen }) => (menuOpen ? 'flex' : 'none')};
-    flex-direction: column;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    width: 100%;
-    background-color: ${({ theme }) => theme?.backgroundColor || '#fff'};
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    gap: 15px;
+    display: none;
   }
 `;
 
-export const NavList = styled.ul`
+export const NavList = styled.ul<{ theme?: any }>`
   list-style: none;
-  display: flex; /* Use flexbox for flexible alignment */
-  justify-content: center; /* Center items */
-  align-items: center;
+  margin: 0;
+  padding: 0;
+  display: flex; /* Horizontal layout by default for desktop */
   gap: 20px;
-  flex-wrap: wrap; /* Prevent breaking on extra items */
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 15px;
-  }
+  align-items: center;
 
   li {
     a {
+      color: ${({ theme }) => theme?.navLinkColor || 'lightblue'};
       text-decoration: none;
-      color: ${({ theme }) => theme?.primaryColor || '#333'};
+      font-size: 18px;
       font-weight: 500;
 
       &:hover {
-        color: ${({ theme }) => theme?.hoverColor || '#007bff'};
+        color: ${({ theme }) => theme?.navLinkHoverColor || '#00bfff'};
       }
     }
+  }
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
   }
 `;
 
@@ -73,11 +61,22 @@ export const LoginLink = styled.button<{ theme?: any }>`
   background: none;
   border: none;
   font-size: 16px;
-  color: ${({ theme }) => theme?.secondaryColor || '#007bff'};
+  color: ${({ theme }) => theme?.loginLinkColor || 'lightblue'};
   cursor: pointer;
+  padding: 10px 20px;
 
   &:hover {
     text-decoration: underline;
+    color: ${({ theme }) => theme?.loginLinkHoverColor || '#0056b3'};
+  }
+
+  @media (max-width: 768px) {
+    display: block;
+    text-align: center;
+  }
+
+  @media (min-width: 769px) {
+    display: block;
   }
 `;
 
@@ -85,10 +84,46 @@ export const MenuToggle = styled.button<{ theme?: any }>`
   background: none;
   border: none;
   font-size: 24px;
+  color: ${({ theme }) => theme?.menuIconColor || 'lightblue'};
   display: none;
-  color: ${({ theme }) => theme?.primaryColor || '#333'};
 
   @media (max-width: 768px) {
     display: block;
   }
+`;
+
+export const Sidebar = styled.div<{ menuOpen: boolean; theme?: any }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background-color: ${({ theme }) =>
+    theme?.sidebarBackgroundColor || '#2c2c2c'};
+  color: ${({ theme }) => theme?.textColor || 'lightblue'};
+  transform: ${({ menuOpen }) =>
+    menuOpen ? 'translateX(0)' : 'translateX(-100%)'};
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+`;
+
+export const SidebarContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+`;
+
+export const SidebarNavList = styled(NavList)`
+  flex-direction: column;
+  gap: 20px;
+  padding: 0 20px;
+  align-items: center;
 `;

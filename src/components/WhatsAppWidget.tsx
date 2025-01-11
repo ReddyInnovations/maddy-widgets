@@ -3,20 +3,11 @@ import Draggable from 'react-draggable';
 import { IconButton, Tooltip } from '@mui/material';
 import { FaWhatsapp } from 'react-icons/fa';
 import { green } from '@mui/material/colors';
-
-interface WhatsAppWidgetProps {
-  phoneNumber: string; // WhatsApp phone number
-  position?: { top?: number; bottom?: number; left?: number; right?: number }; // Position on screen
-  backgroundColor?: string; // Button background color
-  iconColor?: string; // Icon color
-  iconSize?: number; // Icon size
-  tooltipText?: string; // Tooltip text
-  draggable?: boolean; // Enable or disable dragging
-}
+import { WhatsAppWidgetProps } from '@src/interfaces/whatsapp';
 
 const WhatsAppWidget: React.FC<WhatsAppWidgetProps> = ({
   phoneNumber,
-  position = { bottom: 20, right: 20 }, // Default positioning
+  position = { bottom: 20, right: 20 },
   backgroundColor = green[500],
   iconColor = 'white',
   iconSize = 30,

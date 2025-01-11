@@ -1,120 +1,113 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebookF, faTwitter, faLinkedinIn, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import {
+  faWhatsapp,
+  faInstagram,
+  faLinkedinIn,
+} from '@fortawesome/free-brands-svg-icons';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { LinkProps } from '@src/interfaces/common';
 import '../styles/css/footer.css';
+import { defaultThemeColors, FooterProps } from '@src/interfaces/footer';
 
-interface FooterProps {
-  address: string;
-  socialLinks: {
-    facebook: string;
-    twitter: string;
-    linkedin: string;
-    instagram: string;
-  };
-  quickLinks: { label: string; url: string }[];
-  services: { label: string; url: string }[];
-  technologies: { label: string; url: string }[];
-  logoSrc: string;
-  companyName: string;
-  themeColors?: {
-    background: string;
-    text: string;
-    accent: string;
-    linkHover: string;
-  };
-}
+const FooterSection: React.FC<{
+  title?: string;
+  links?: LinkProps[];
+  titleColor?: string;
+}> = ({ title, links, titleColor }) => {
+  if (!links || links.length === 0) return null;
+
+  return (
+    <div className="footer-section">
+      {title && <h4 style={{ color: titleColor }}>{title}</h4>}
+      {links.map(
+        (link) =>
+          link.url && (
+            <a key={link.url} href={link.url} className="footer-link">
+              {link.label || link.url}
+            </a>
+          )
+      )}
+    </div>
+  );
+};
 
 const Footer: React.FC<FooterProps> = ({
-  address,
-  socialLinks,
-  quickLinks,
-  services,
-  technologies,
-  logoSrc,
   companyName,
-  themeColors = {
-    background: '#1f1f1f',
-    text: '#ffffff',
-    accent: '#ffdd57',
-    linkHover: '#ffa726',
-  },
+  address,
+  logoSrc,
+  socialLinks = {},
+  linkSections = [],
+  showFooterBottom = false,
+  themeColors = defaultThemeColors,
 }) => {
+  const hasSocialLinks = Object.values(socialLinks).some((link) => !!link);
+
   return (
     <footer
       className="footer"
-      style={{ backgroundColor: themeColors.background, color: themeColors.text }}
+      style={{
+        backgroundColor: themeColors.background,
+        color: themeColors.text,
+      }}
     >
       <div className="footer-grid">
-        {/* Left Section */}
-        <div className="footer-section">
-          <img src={logoSrc} alt="Company Logo" className="footer-logo" />
-          <p>{address}</p>
-          <div className="footer-social">
-            <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faFacebookF} />
-            </a>
-            <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faTwitter} />
-            </a>
-            <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faLinkedinIn} />
-            </a>
-            <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faInstagram} />
-            </a>
+        {(logoSrc || address || hasSocialLinks) && (
+          <div className="footer-section">
+            {logoSrc && (
+              <img src={logoSrc} alt="Company Logo" className="footer-logo" />
+            )}
+            {address && <p>{address}</p>}
+            {hasSocialLinks && (
+              <div className="footer-social">
+                {Object.entries(socialLinks).map(([key, url]) =>
+                  url ? (
+                    <a
+                      key={key}
+                      href={url}
+                      className="footer-social-icon"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FontAwesomeIcon
+                        icon={
+                          key === 'whatsapp'
+                            ? faWhatsapp
+                            : key === 'instagram'
+                            ? faInstagram
+                            : key === 'linkedin'
+                            ? faLinkedinIn
+                            : faEnvelope
+                        }
+                      />
+                    </a>
+                  ) : null
+                )}
+              </div>
+            )}
           </div>
-        </div>
+        )}
 
-        {/* Quick Links */}
-        <div className="footer-section">
-          <h4 style={{ color: themeColors.accent }}>Quick Links</h4>
-          {quickLinks.map((link) => (
-            <a
-              key={link.url}
-              href={link.url}
-              className="footer-link"
-              style={{ color: themeColors.text }}
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
-
-        {/* Services */}
-        <div className="footer-section">
-          <h4 style={{ color: themeColors.accent }}>Services</h4>
-          {services.map((service) => (
-            <a
-              key={service.url}
-              href={service.url}
-              className="footer-link"
-              style={{ color: themeColors.text }}
-            >
-              {service.label}
-            </a>
-          ))}
-        </div>
-
-        {/* Technologies */}
-        <div className="footer-section">
-          <h4 style={{ color: themeColors.accent }}>Technologies</h4>
-          {technologies.map((tech) => (
-            <a
-              key={tech.url}
-              href={tech.url}
-              className="footer-link"
-              style={{ color: themeColors.text }}
-            >
-              {tech.label}
-            </a>
-          ))}
-        </div>
+        {linkSections.map((linkSection, index) => (
+          <FooterSection
+            key={index}
+            title={linkSection.title}
+            links={linkSection.links}
+            titleColor={themeColors.sectionTitleColor}
+          />
+        ))}
       </div>
 
-      {/* Footer Bottom */}
-      <div className="footer-bottom">
-        <p>&copy; {new Date().getFullYear()} {companyName}. All Rights Reserved.</p>
-      </div>
+      {showFooterBottom && companyName && (
+        <div className="footer-bottom">
+          {' '}
+          <p>
+            {' '}
+            &copy; {new Date().getFullYear()} {companyName}. All Rights
+            Reserved.{' '}
+          </p>{' '}
+        </div>
+      )}
     </footer>
   );
 };
