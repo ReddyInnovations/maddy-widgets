@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Draggable from 'react-draggable';
 import { IconButton, Tooltip } from '@mui/material';
 import { FaWhatsapp } from 'react-icons/fa';
@@ -14,6 +14,8 @@ const WhatsAppWidget: React.FC<WhatsAppWidgetProps> = ({
   tooltipText = 'Chat with us on WhatsApp',
   draggable = true,
 }) => {
+  const widgetRef = useRef<HTMLDivElement>(null);
+
   const handleClick = () => {
     window.open(`https://wa.me/${phoneNumber}`, '_blank');
   };
@@ -34,8 +36,8 @@ const WhatsAppWidget: React.FC<WhatsAppWidgetProps> = ({
   };
 
   return (
-    <Draggable disabled={!draggable}>
-      <div style={widgetStyle}>
+    <Draggable disabled={!draggable} nodeRef={widgetRef}>
+      <div style={widgetStyle} ref={widgetRef}>
         <Tooltip title={tooltipText} aria-label="whatsapp">
           <IconButton
             onClick={handleClick}
