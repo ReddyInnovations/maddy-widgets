@@ -11,16 +11,38 @@ export const Section = styled.section`
   padding: 0 2rem;
 `;
 
+const glow = keyframes`
+  0% {
+    box-shadow: 0 0 15px #00d4ff, 0 0 30px #00d4ff, 0 0 60px #ff0066, 0 0 90px #ff0066;
+  }
+  50% {
+    box-shadow: 0 0 25px #ff0066, 0 0 50px #ff0066, 0 0 100px #00d4ff, 0 0 150px #00d4ff;
+  }
+  100% {
+    box-shadow: 0 0 15px #00d4ff, 0 0 30px #00d4ff, 0 0 60px #ff0066, 0 0 90px #ff0066;
+  }
+`;
+
 export const Content = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-areas: 'text image'; /* Desktop layout: Text on the left, Image on the right */
   align-items: center;
   gap: 2rem;
   max-width: 1200px;
   width: 100%;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr; /* Mobile layout: Single column */
+    grid-template-areas:
+      'image' /* Image on top */
+      'text'; /* Text below the image */
+    text-align: center;
+  }
 `;
 
 export const Text = styled.div`
+  grid-area: text; /* Assign this area to Text */
   h1 {
     font-size: 2.5rem;
     color: #ffffff;
@@ -51,10 +73,40 @@ export const Text = styled.div`
   }
 `;
 
-export const SocialIcons = styled.div`
-  margin-top: 1.5rem;
+export const ImageContainer = styled.div`
+  grid-area: image; /* Assign this area to the Image */
   display: flex;
-  gap: 1.5rem;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const ImageWrapper = styled.div`
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: linear-gradient(to right, #00aaff, #ff0066);
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: ${glow} 3s infinite ease-in-out;
+
+  @media (max-width: 768px) {
+    width: 250px; /* Reduce size for mobile */
+    height: 250px;
+  }
+`;
+
+export const ProfileImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+`;
+
+export const SocialIcons = styled.div`
+  display: flex;
+  gap: 1rem; /* Space between icons */
   font-size: 2rem;
 
   svg {
@@ -67,10 +119,33 @@ export const SocialIcons = styled.div`
       transform: scale(1.2);
     }
   }
+
+  @media (max-width: 768px) {
+    justify-content: center; /* Center icons in mobile view */
+  }
+
+  @media (min-width: 768px) {
+    justify-content: flex-start; /* Align icons in a row for desktop */
+  }
+`;
+
+export const ButtonIconsWrapper = styled.div`
+  display: flex;
+  gap: 1rem; /* Space between icons and button */
+  align-items: center;
+  flex-wrap: wrap; /* Allow wrapping in mobile if space runs out */
+
+  @media (max-width: 768px) {
+    justify-content: center; /* Center on mobile */
+  }
+
+  @media (min-width: 768px) {
+    flex-direction: column; /* Stack icons and button for desktop */
+    align-items: flex-start;
+  }
 `;
 
 export const StyledLink = styled(RouterLink)`
-  margin-top: 2rem;
   padding: 0.75rem 2rem;
   background: linear-gradient(to right, #00aaff, #0077cc);
   border: none;
@@ -87,41 +162,8 @@ export const StyledLink = styled(RouterLink)`
     background: linear-gradient(to right, #0077cc, #005f99);
     transform: scale(1.05);
   }
-`;
 
-export const ImageContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const glow = keyframes`
-  0% {
-    box-shadow: 0 0 15px #00d4ff, 0 0 30px #00d4ff, 0 0 60px #ff0066, 0 0 90px #ff0066;
+  @media (max-width: 768px) {
+    flex-shrink: 0; /* Prevent button shrinkage in mobile */
   }
-  50% {
-    box-shadow: 0 0 25px #ff0066, 0 0 50px #ff0066, 0 0 100px #00d4ff, 0 0 150px #00d4ff;
-  }
-  100% {
-    box-shadow: 0 0 15px #00d4ff, 0 0 30px #00d4ff, 0 0 60px #ff0066, 0 0 90px #ff0066;
-  }
-`;
-
-export const ImageWrapper = styled.div`
-  width: 400px;
-  height: 400px;
-  border-radius: 50%;
-  background: linear-gradient(to right, #00aaff, #ff0066);
-  padding: 6px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  animation: ${glow} 3s infinite ease-in-out;
-`;
-
-export const ProfileImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
 `;

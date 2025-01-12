@@ -34,7 +34,7 @@ const Header: React.FC<HeaderProps> = ({
 
   useEffect(() => {
     window.addEventListener('resize', handleResize);
-    
+
     // Cleanup the event listener
     return () => {
       window.removeEventListener('resize', handleResize);

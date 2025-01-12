@@ -15,6 +15,7 @@ import {
   ImageContainer,
   ImageWrapper,
   ProfileImage,
+  ButtonIconsWrapper,
 } from '@src/styles/profile.styles';
 
 export const getSocialIcon = (platform: string) => {
@@ -53,26 +54,29 @@ const Profile: React.FC<ProfileProps> = ({
             And I'm a <span>{profileText.title}</span>
           </h3>
           <p>{profileText.description}</p>
-          <SocialIcons>
-            {socialLinksData.map(
-              (link, index) =>
-                link.icon && (
-                  <a
-                    key={index}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {link.icon}
-                  </a>
-                )
-            )}
-          </SocialIcons>
-          <StyledLink to={profileText.linkURL}>
-            {profileText.linkText}
-          </StyledLink>
-        </Text>
 
+          {/* Social Icons and Button */}
+          <ButtonIconsWrapper>
+            <SocialIcons>
+              {socialLinksData.map(
+                (link, index) =>
+                  link.icon && (
+                    <a
+                      key={index}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {link.icon}
+                    </a>
+                  )
+              )}
+            </SocialIcons>
+            <StyledLink to={profileText.linkURL}>
+              {profileText.linkText}
+            </StyledLink>
+          </ButtonIconsWrapper>
+        </Text>
         <ImageContainer>
           <ImageWrapper>
             <ProfileImage src={profileImage} alt={siteTitle} />

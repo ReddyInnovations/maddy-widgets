@@ -6,7 +6,13 @@ import Footer from './components/Footer';
 
 import WhatsAppWidget from './components/WhatsAppWidget';
 import Profile from './components/Profile';
-import { cardData, footerData, headerData, profileData, whatsappData } from './mock/mock';
+import {
+  cardData,
+  footerData,
+  headerData,
+  profileData,
+  whatsappData,
+} from './mock/mock';
 import MaddyCardSection from './components/Card/MaddyCardSection';
 
 const App: React.FC = () => {

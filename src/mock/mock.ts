@@ -90,10 +90,9 @@ export const footerData = {
   showFooterBottom: true,
 };
 
-
 export const cardData = {
-  title: "Educational Background",
-  subtitle: "Highlights of Academic Achievements",
+  title: 'Educational Background',
+  subtitle: 'Highlights of Academic Achievements',
   cardInfoList: [],
-  borderColor: "#ff9800"
-}
+  borderColor: '#ff9800',
+};
