@@ -133,10 +133,10 @@ export const ButtonIconsWrapper = styled.div`
   display: flex;
   gap: 1rem; /* Space between icons and button */
   align-items: center;
-  flex-wrap: wrap; /* Allow wrapping in mobile if space runs out */
 
   @media (max-width: 768px) {
     justify-content: center; /* Center on mobile */
+    flex-wrap: wrap;
   }
 
   @media (min-width: 768px) {
