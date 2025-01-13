@@ -4,12 +4,18 @@ import { Link as RouterLink } from 'react-router-dom';
 export const Section = styled.section`
   background: linear-gradient(135deg, #0a192f, #020c1b);
   color: #ffffff;
-  height: 100vh;
+  min-height: 100vh; /* Full viewport height */
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 2rem;
+  flex-direction: column; /* Stack content vertically */
+  padding: 2rem 1rem;
+
+  @media (max-width: 768px) {
+    padding: 4rem 1rem; /* Add extra padding for smaller screens */
+  }
 `;
+
 
 const glow = keyframes`
   0% {
@@ -26,17 +32,18 @@ const glow = keyframes`
 export const Content = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-areas: 'text image'; /* Desktop layout: Text on the left, Image on the right */
+  grid-template-areas: 'text image';
   align-items: center;
   gap: 2rem;
   max-width: 1200px;
   width: 100%;
+  
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr; /* Mobile layout: Single column */
     grid-template-areas:
-      'image' /* Image on top */
-      'text'; /* Text below the image */
+      'image'
+      'text';
     text-align: center;
   }
 `;
@@ -74,15 +81,21 @@ export const Text = styled.div`
 `;
 
 export const ImageContainer = styled.div`
-  grid-area: image; /* Assign this area to the Image */
+  grid-area: image; /* Assign to the grid area */
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 2rem; /* Space below the image to prevent overlap */
+
+  @media (max-width: 768px) {
+    margin-bottom: 3rem; /* Increase margin for smaller screens */
+  }
 `;
 
+
 export const ImageWrapper = styled.div`
-  width: 400px;
-  height: 400px;
+  width: 350px;
+  height: 350px;
   border-radius: 50%;
   background: linear-gradient(to right, #00aaff, #ff0066);
   padding: 6px;
@@ -95,7 +108,13 @@ export const ImageWrapper = styled.div`
     width: 250px; /* Reduce size for mobile */
     height: 250px;
   }
+
+  @media (max-width: 480px) {
+    width: 200px; /* Further reduce size for very small screens */
+    height: 200px;
+  }
 `;
+
 
 export const ProfileImage = styled.img`
   width: 100%;
@@ -106,8 +125,9 @@ export const ProfileImage = styled.img`
 
 export const SocialIcons = styled.div`
   display: flex;
-  gap: 1rem; /* Space between icons */
+  gap: 1.5rem; /* Consistent space between icons */
   font-size: 2rem;
+  margin-top: 2rem;
 
   svg {
     color: #00aaff;
@@ -121,29 +141,24 @@ export const SocialIcons = styled.div`
   }
 
   @media (max-width: 768px) {
-    justify-content: center; /* Center icons in mobile view */
-  }
-
-  @media (min-width: 768px) {
-    justify-content: flex-start; /* Align icons in a row for desktop */
+    justify-content: flex-start; /* Keep icons aligned consistently */
+    margin-top: 1rem; /* Slightly reduce margin on mobile */
   }
 `;
 
 export const ButtonIconsWrapper = styled.div`
   display: flex;
-  gap: 1rem; /* Space between icons and button */
-  align-items: center;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: flex-start;
+  justify-content: flex-start;
 
   @media (max-width: 768px) {
-    justify-content: center; /* Center on mobile */
-    flex-wrap: wrap;
-  }
-
-  @media (min-width: 768px) {
-    flex-direction: column; /* Stack icons and button for desktop */
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: center
   }
 `;
+
 
 export const StyledLink = styled(RouterLink)`
   padding: 0.75rem 2rem;
