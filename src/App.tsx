@@ -14,6 +14,7 @@ import {
   whatsappData,
 } from './mock/mock';
 import MaddyCardSection from './components/Card/MaddyCardSection';
+import Contact from './mock/Contact'
 
 const App: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(headerData.menuOpen);
@@ -29,6 +30,7 @@ const App: React.FC = () => {
       />
       <Profile {...profileData} />
       <MaddyCardSection {...cardData} />
+      <Contact />
       <Footer {...footerData} />
       <WhatsAppWidget {...whatsappData} />
     </Router>

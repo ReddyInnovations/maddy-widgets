@@ -12,6 +12,7 @@ module.exports = {
             './Footer': './src/components/Footer',
             './WhatsAppWidget': './src/components/WhatsAppWidget',
             './Profile': './src/components/Profile',
+            './ContactWidget': '/src/components/ContactWidget',
             './MaddyCardSection': './src/components/Card/MaddyCardSection',
             './MaddyCard': './src/components/Card/MaddyCard',
         },
