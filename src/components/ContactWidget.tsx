@@ -8,6 +8,7 @@ const ContactWidget: React.FC<ContactWidgetProps> = ({
   contactInfo,
   emailConfig,
   externalApiUrl,
+  setLoading, // Optional setLoading function
 }) => {
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
   const [isFormValid, setIsFormValid] = useState(false);
@@ -34,6 +35,11 @@ const ContactWidget: React.FC<ContactWidgetProps> = ({
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Safely call setLoading if it is defined
+    if (setLoading) {
+      setLoading(true);
+    }
 
     try {
       if (emailConfig) {
@@ -62,10 +68,15 @@ const ContactWidget: React.FC<ContactWidgetProps> = ({
       console.error("Error during submission:", error);
       setPopupMessage("❌ Something went wrong. Please try again.");
       setPopupStatus(false);
-    }
+    } finally {
+      // Safely call setLoading if it is defined
+      if (setLoading) {
+        setLoading(false);
+      }
 
-    // Clear popup after 5 seconds
-    setTimeout(() => setPopupMessage(null), 5000);
+      // Clear popup message after 5 seconds
+      setTimeout(() => setPopupMessage(null), 5000);
+    }
   };
 
   return (
