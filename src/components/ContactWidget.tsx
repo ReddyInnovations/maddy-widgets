@@ -8,7 +8,7 @@ const ContactWidget: React.FC<ContactWidgetProps> = ({
   contactInfo,
   emailConfig,
   externalApiUrl,
-  setLoading, // Optional setLoading function
+  setLoading, // Passed from parent component to manage loading state
 }) => {
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
   const [isFormValid, setIsFormValid] = useState(false);
@@ -36,7 +36,7 @@ const ContactWidget: React.FC<ContactWidgetProps> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Safely call setLoading if it is defined
+    // Set loading to true before making the API call
     if (setLoading) {
       setLoading(true);
     }
@@ -64,12 +64,15 @@ const ContactWidget: React.FC<ContactWidgetProps> = ({
           setPopupStatus(false);
         }
       }
+      
+      setFormData({}); // Reset form fields
+
     } catch (error) {
       console.error("Error during submission:", error);
       setPopupMessage("❌ Something went wrong. Please try again.");
       setPopupStatus(false);
     } finally {
-      // Safely call setLoading if it is defined
+      // Set loading to false after the API call is completed
       if (setLoading) {
         setLoading(false);
       }
@@ -114,7 +117,11 @@ const ContactWidget: React.FC<ContactWidgetProps> = ({
               )}
             </div>
           ))}
-          <button type="submit" className="submit-button" disabled={!isFormValid}>
+          <button
+            type="submit"
+            className="submit-button"
+            disabled={!isFormValid} // Disable submit if the form is invalid
+          >
             Send Message
           </button>
         </form>
