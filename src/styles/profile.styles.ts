@@ -171,7 +171,7 @@ export const ButtonsWrapper = styled.div`
     align-items: center;
   }
 `;
-export const CommonLink = styled.a`
+const buttonStyles = `
   padding: 0.75rem 2rem;
   background: linear-gradient(to right, #00aaff, #0077cc);
   border: none;
@@ -194,10 +194,10 @@ export const CommonLink = styled.a`
   }
 `;
 
-// Usage for internal links (RouterLink)
 export const InternalLink = styled(RouterLink)`
-  ${CommonLink};
+  ${buttonStyles};
 `;
 
-// Usage for external links (a tag for links like PDF)
-export const ExternalLink = styled(CommonLink)``;
+export const ExternalLink = styled.a`
+  ${buttonStyles}
+`;
