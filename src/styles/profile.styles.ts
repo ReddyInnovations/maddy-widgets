@@ -159,6 +159,20 @@ export const ButtonIconsWrapper = styled.div`
   }
 `;
 
+export const ButtonsWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
+`;
+
+
 
 export const StyledLink = styled(RouterLink)`
   padding: 0.75rem 2rem;

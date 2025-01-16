@@ -13,8 +13,10 @@ export const profileData = {
     title: 'Full Stack Developer',
     description:
       'I specialize in building responsive frontends with React and scalable backends with .NET C#. My focus is on delivering modern, efficient, and user-friendly web solutions.',
-    linkText: 'More About Me',
-    linkURL: '/about-me',
+    aboutLinkText: 'More About Me',
+    aboutLinkURL: '/about-me',
+    cvLinkText: 'Download CV',
+    cvLinkURL: '/assets/my-cv.pdf',
   },
 };
 

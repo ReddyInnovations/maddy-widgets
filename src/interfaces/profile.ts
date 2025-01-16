@@ -7,7 +7,9 @@ export interface ProfileProps {
     name: string;
     title: string;
     description: string;
-    linkText: string;
-    linkURL: string;
+    aboutLinkText: string;
+    aboutLinkURL: string;
+    cvLinkText: string;
+    cvLinkURL: string;
   };
 }

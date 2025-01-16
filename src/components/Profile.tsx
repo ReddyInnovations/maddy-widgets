@@ -1,10 +1,4 @@
 import React from 'react';
-import {
-  FaWhatsapp,
-  FaInstagram,
-  FaLinkedin,
-  FaEnvelope,
-} from 'react-icons/fa';
 import { ProfileProps } from '@src/interfaces/profile';
 import {
   Text,
@@ -16,10 +10,28 @@ import {
   ImageWrapper,
   ProfileImage,
   ButtonIconsWrapper,
+  ButtonsWrapper,
 } from '@src/styles/profile.styles';
 
+import {
+  FaWhatsapp,
+  FaInstagram,
+  FaLinkedin,
+  FaEnvelope,
+  FaGithub,
+  FaFacebook,
+  FaTwitter,
+  FaYoutube,
+  FaTiktok,
+  FaPinterest,
+  FaReddit,
+  FaSnapchat,
+  FaDiscord,
+  FaTelegram,
+} from 'react-icons/fa';
+
 export const getSocialIcon = (platform: string) => {
-  switch (platform) {
+  switch (platform.toLowerCase()) {
     case 'whatsapp':
       return <FaWhatsapp />;
     case 'instagram':
@@ -28,6 +40,26 @@ export const getSocialIcon = (platform: string) => {
       return <FaLinkedin />;
     case 'gmail':
       return <FaEnvelope />;
+    case 'github':
+      return <FaGithub />;
+    case 'facebook':
+      return <FaFacebook />;
+    case 'twitter':
+      return <FaTwitter />;
+    case 'youtube':
+      return <FaYoutube />;
+    case 'tiktok':
+      return <FaTiktok />;
+    case 'pinterest':
+      return <FaPinterest />;
+    case 'reddit':
+      return <FaReddit />;
+    case 'snapchat':
+      return <FaSnapchat />;
+    case 'discord':
+      return <FaDiscord />;
+    case 'telegram':
+      return <FaTelegram />;
     default:
       return null;
   }
@@ -72,9 +104,14 @@ const Profile: React.FC<ProfileProps> = ({
                   )
               )}
             </SocialIcons>
-            <StyledLink to={profileText.linkURL}>
-              {profileText.linkText}
-            </StyledLink>
+            <ButtonsWrapper>
+              <StyledLink to={profileText.cvLinkURL}>
+                {profileText.cvLinkText}
+              </StyledLink>
+              <StyledLink to={profileText.aboutLinkURL}>
+                {profileText.aboutLinkText}
+              </StyledLink>
+            </ButtonsWrapper>
           </ButtonIconsWrapper>
         </Text>
         <ImageContainer>
