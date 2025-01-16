@@ -5,12 +5,13 @@ import {
   Section,
   Content,
   SocialIcons,
-  StyledLink,
   ImageContainer,
   ImageWrapper,
   ProfileImage,
   ButtonIconsWrapper,
   ButtonsWrapper,
+  ExternalLink,
+  InternalLink,
 } from '@src/styles/profile.styles';
 
 import {
@@ -105,12 +106,12 @@ const Profile: React.FC<ProfileProps> = ({
               )}
             </SocialIcons>
             <ButtonsWrapper>
-              <StyledLink to={profileText.cvLinkURL}>
+              <ExternalLink href={profileText.cvLinkURL} target="_blank" rel="noopener noreferrer">
                 {profileText.cvLinkText}
-              </StyledLink>
-              <StyledLink to={profileText.aboutLinkURL}>
+              </ExternalLink>
+              <InternalLink to={profileText.aboutLinkURL}>
                 {profileText.aboutLinkText}
-              </StyledLink>
+              </InternalLink >
             </ButtonsWrapper>
           </ButtonIconsWrapper>
         </Text>
