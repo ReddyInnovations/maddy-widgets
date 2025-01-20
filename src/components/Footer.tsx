@@ -63,7 +63,7 @@ const Footer: React.FC<FooterProps> = ({
                       target="_blank"
                       rel="noopener noreferrer"
                     > {getSocialIcon(key)}
-                     </a>
+                    </a>
                   ) : null
                 )}
               </div>
@@ -83,12 +83,7 @@ const Footer: React.FC<FooterProps> = ({
 
       {showFooterBottom && companyName && (
         <div className="footer-bottom">
-          {' '}
-          <p>
-            {' '}
-            &copy; {new Date().getFullYear()} {companyName}. All Rights
-            Reserved.{' '}
-          </p>{' '}
+          <p>&copy; {new Date().getFullYear()} {companyName}. All Rights Reserved.</p>
         </div>
       )}
     </footer>
