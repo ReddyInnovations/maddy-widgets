@@ -50,6 +50,8 @@ const Contact: React.FC = () => {
   return (
     <div className="parent-component">
       <ContactWidget
+        title="Contact Me"
+        submitTitle="Send Message"
         formFields={formFields}
         contactInfo={contactInfo}
         emailConfig={{

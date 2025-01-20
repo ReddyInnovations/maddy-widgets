@@ -1,5 +1,6 @@
 export interface ContactWidgetProps {
-  // Array of form field objects
+  title: string;
+  submitTitle: string;
   formFields: Array<{
     id: string;           // ID for the field (e.g., "email", "name")
     label: string;        // Label for the field (e.g., "Your Name")

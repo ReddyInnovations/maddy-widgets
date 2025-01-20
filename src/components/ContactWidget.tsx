@@ -4,6 +4,8 @@ import "../styles/css/ContactWidget.css";
 import { ContactWidgetProps } from "@src/interfaces/ContactWidget";
 
 const ContactWidget: React.FC<ContactWidgetProps> = ({
+  title,
+  submitTitle,
   formFields,
   contactInfo,
   emailConfig,
@@ -64,7 +66,7 @@ const ContactWidget: React.FC<ContactWidgetProps> = ({
           setPopupStatus(false);
         }
       }
-      
+
       setFormData({}); // Reset form fields
 
     } catch (error) {
@@ -93,7 +95,7 @@ const ContactWidget: React.FC<ContactWidgetProps> = ({
       {/* Contact Form Section */}
       <div className="contact-form-section">
         <form onSubmit={handleSubmit} className="contact-form">
-          <h2>Contact Us</h2>
+          <h2>{title}</h2>
           {formFields.map((field) => (
             <div key={field.id} className="form-group">
               <label htmlFor={field.id}>{field.label}</label>
@@ -122,7 +124,7 @@ const ContactWidget: React.FC<ContactWidgetProps> = ({
             className="submit-button"
             disabled={!isFormValid} // Disable submit if the form is invalid
           >
-            Send Message
+            {submitTitle}
           </button>
         </form>
       </div>
