@@ -77,6 +77,9 @@
   color: var(--footer-bottom-color, #bbb);
 }
 
+.footer-bottom p {
+  padding-top: 10px;
+}
 /* Responsive Design */
 @media (max-width: 768px) {
   .footer-grid {
