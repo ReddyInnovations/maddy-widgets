@@ -1,14 +1,8 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faWhatsapp,
-  faInstagram,
-  faLinkedinIn,
-} from '@fortawesome/free-brands-svg-icons';
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { LinkProps } from '@src/interfaces/common';
-import '../styles/css/footer.css';
 import { defaultThemeColors, FooterProps } from '@src/interfaces/footer';
+import { getSocialIcon } from './Service/GetSocialIcon';
+import '../styles/css/footer.css';
 
 const FooterSection: React.FC<{
   title?: string;
@@ -68,19 +62,8 @@ const Footer: React.FC<FooterProps> = ({
                       className="footer-social-icon"
                       target="_blank"
                       rel="noopener noreferrer"
-                    >
-                      <FontAwesomeIcon
-                        icon={
-                          key === 'whatsapp'
-                            ? faWhatsapp
-                            : key === 'instagram'
-                            ? faInstagram
-                            : key === 'linkedin'
-                            ? faLinkedinIn
-                            : faEnvelope
-                        }
-                      />
-                    </a>
+                    > {getSocialIcon(key)}
+                     </a>
                   ) : null
                 )}
               </div>
